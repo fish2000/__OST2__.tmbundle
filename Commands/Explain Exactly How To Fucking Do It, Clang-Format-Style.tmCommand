@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env bash
+
+# assemble the gigantic gist URL
+digest0="70aa7fd168d1f1234bd6f91d509bbbab"
+digest1="f54c348ebd9d4b99ee1a54848011905944b757a5"
+rawgist="https://gist.githubusercontent.com/fish2000/${digest0}/raw/${digest1}/clang-format-ocd"
+
+# target is a .clang-format file, in the root of the project
+destination="${TM_PROJECT_DIRECTORY}/.clang-format"
+
+# create a proper temporary file name
+# -- the -u flag means the file is pre-rm'ed
+# -- to which to save the curl result
+temporary=$(mktemp -u -t gist-curl-output.clang-format)
+
+# select a curl binary, preferring a Homebrew installation
+brewcurl="/usr/local/opt/curl/bin/curl"
+distcurl="/usr/bin/curl"
+curl=$([[ -x $brewcurl ]] &amp;&amp; echo $brewcurl || echo $distcurl)
+
+# save curl output to the temporary name, capturing the result
+curlresult=$(${curl} --silent "${rawgist}" &gt; $temporary)
+
+# if curl exited successfully, copy the file,
+# clobbering anything existant
+[[ $curlresult ]] &amp;&amp; cp -f $temporary $destination
+
+# if curl fucked up somehow, tell us about it
+[[ $curlresult ]] || echo "ERROR: failed retrieving clang-format configuration from gist"
+[[ $curlresult ]] || echo "ERROR: using ${curl}"
+[[ $curlresult ]] || echo "ERROR: from ${rawgist}"
+
+# if everything worked out, tell us about that
+([[ $curlresult ]] &amp;&amp; [[ -r $destination ]]) &amp;&amp; echo "Installed clang-format configuration to ${destination}"
+</string>
+	<key>input</key>
+	<string>none</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>name</key>
+	<string>Explain Exactly How To Fucking Do It, Clang-Format-Style</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>text</string>
+	<key>outputLocation</key>
+	<string>toolTip</string>
+	<key>uuid</key>
+	<string>F3CDE113-8410-4746-ABEE-8DA790278C9E</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>

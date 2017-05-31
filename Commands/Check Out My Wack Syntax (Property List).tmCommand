@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>saveActiveFile</string>
+	<key>command</key>
+	<string>#!/usr/bin/env bash
+
+TEMP_FILE=`mktemp /tmp/TextMate_plist.XXXXXX`
+if [[ -n $TEMP_FILE ]]; then
+    cat &gt; "$TEMP_FILE"
+    # plutil -lint "$TEMP_FILE" | perl -pe "s|\\Q$TEMP_FILE\\E:\s*||"\
+    plutil -lint "$TEMP_FILE"
+    rm "$TEMP_FILE"
+else
+    echo "Error: Temporary file could not be created"
+fi</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>keyEquivalent</key>
+	<string>^@v</string>
+	<key>name</key>
+	<string>Check Out My Wack Syntax (Property List)</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>text</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.plist</string>
+	<key>uuid</key>
+	<string>7D533514-8A8F-4EE8-B59A-4F99CF204656</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>
